@@ -12,11 +12,12 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
 
-        ParkingSpot p1 = new ParkingSpot(ParkingSpotCategory.SMALL, ParkingSpotStatus.FREE);
-        ParkingSpot p2 = new ParkingSpot(ParkingSpotCategory.MEDIUM, ParkingSpotStatus.FREE);
-        ParkingSpot p3 = new ParkingSpot(ParkingSpotCategory.LARGE, ParkingSpotStatus.FREE);
-        ParkingSpot p4 = new ParkingSpot(ParkingSpotCategory.SMALL, ParkingSpotStatus.FREE);
-        ParkingSpot p5 = new ParkingSpot(ParkingSpotCategory.MEDIUM, ParkingSpotStatus.FREE);
+        ParkingSpot p1 = new ParkingSpot(1, ParkingSpotCategory.SMALL, ParkingSpotStatus.FREE);
+        ParkingSpot p2 = new ParkingSpot(2, ParkingSpotCategory.MEDIUM, ParkingSpotStatus.FREE);
+        ParkingSpot p3 = new ParkingSpot(3, ParkingSpotCategory.LARGE, ParkingSpotStatus.FREE);
+        ParkingSpot p4 = new ParkingSpot(4, ParkingSpotCategory.SMALL, ParkingSpotStatus.FREE);
+        ParkingSpot p5 = new ParkingSpot(5, ParkingSpotCategory.MEDIUM, ParkingSpotStatus.FREE);
+        ParkingSpot p6 = new ParkingSpot(6, ParkingSpotCategory.LARGE, ParkingSpotStatus.FREE);
 
         List<ParkingSpot> parkingSpotList = new ArrayList<>();
 
@@ -25,9 +26,10 @@ public class Main {
         parkingSpotList.add(p3);
         parkingSpotList.add(p4);
         parkingSpotList.add(p5);
+        parkingSpotList.add(p6);
 
-        ParkingField parkingField= new ParkingField(parkingSpotList);
-        TicketDispenser ticketDispenser= new TicketDispenser(parkingField);
+        ParkingField parkingField = new ParkingField(parkingSpotList);
+        TicketDispenser ticketDispenser = new TicketDispenser(parkingField);
         ParkingSystem parkingSystem = new ParkingSystem(ticketDispenser);
 
         User user1 = new User("Ana Luca", UserType.REGULAR);
@@ -48,6 +50,9 @@ public class Main {
         User user6 = new User("Paul", UserType.REGULAR);
         Truck truck1 = new Truck(user6);
 
+        User user7 = new User("Paula", UserType.VIP);
+        Car car5 = new Car(user7);
+
         Ticket t1 = parkingSystem.issueTicketForVehicle(car1);
 
         Ticket t2 = parkingSystem.issueTicketForVehicle(car2);
@@ -60,11 +65,15 @@ public class Main {
 
         Ticket t6 = parkingSystem.issueTicketForVehicle(truck1);
 
+        Ticket t7 = parkingSystem.issueTicketForVehicle(car5);
+
         System.out.println(t1.getBody());
         System.out.println(t2.getBody());
         System.out.println(t3.getBody());
         System.out.println(t4.getBody());
         System.out.println(t5.getBody());
         System.out.println(t6.getBody());
+        System.out.println(t7.getBody());
+
     }
 }

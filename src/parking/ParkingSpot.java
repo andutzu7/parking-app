@@ -4,19 +4,36 @@ import parking.utils.ParkingSpotCategory;
 import parking.utils.ParkingSpotStatus;
 
 public class ParkingSpot {
-    private ParkingSpotCategory category;
+
+    private final int id;
+    private final ParkingSpotCategory category;
     private ParkingSpotStatus status;
-    public ParkingSpot(ParkingSpotCategory category, ParkingSpotStatus status) {
+    public ParkingSpot(int id, ParkingSpotCategory category, ParkingSpotStatus status) {
+        this.id = id;
         this.category = category;
         this.status = status;
     }
 
-    public ParkingSpotCategory getCategory() {
-        return category;
+    @Override
+    public int hashCode() {
+        return this.id;
     }
 
-    public void setCategory(ParkingSpotCategory category) {
-        this.category = category;
+    @Override
+    public boolean equals(Object obj) {
+        if(this == obj) {
+            return true;
+        }
+        if(obj == null || obj.getClass()!= this.getClass()) {
+            return false;
+        }
+        ParkingSpot other = (ParkingSpot) obj;
+        return (this.getId() == other.getId());
+
+    }
+
+    public ParkingSpotCategory getCategory() {
+        return category;
     }
 
     public ParkingSpotStatus getStatus() {
@@ -25,6 +42,10 @@ public class ParkingSpot {
 
     public void setStatus(ParkingSpotStatus status) {
         this.status = status;
+    }
+
+    public int getId() {
+        return id;
     }
 
 }

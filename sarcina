@@ -6,3 +6,9 @@ A regular user can park a motorcycle on a small spot, a car on a medium
 spot and a truck on the large one.
 A VIP user can park its vehicle on a bigger spot also if there are no available
 spots for that vehicle category.
+
+
+Modificari:
+- Suprascris equals si hashcode in parking field -- done
+- Elminat redundante la ticketdispenser --done
+- Refactorizat Parking system issueTicketForVehicle (la verificre tichet invalid)

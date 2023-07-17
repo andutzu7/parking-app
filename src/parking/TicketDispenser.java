@@ -1,5 +1,6 @@
 package parking;
 
+import exceptions.UnavailableParkingSpotsException;
 import parking.utils.ParkingSpotCategory;
 import parking.utils.ParkingSpotStatus;
 
@@ -11,68 +12,47 @@ import java.util.stream.Collectors;
 public class TicketDispenser {
 
     private ParkingField parkingField;
-    private final String unavailableTicketMessage = "No parking spots available";
-
     public TicketDispenser(ParkingField parkingField) {
         this.parkingField = parkingField;
     }
 
 
-
     public Ticket issueTicket(ParkingSpotCategory parkingSpotCategory) {
-        Ticket parkingTicket = new Ticket();
-        if (checkAvailableParkingSpots(parkingSpotCategory)) {
-            ParkingSpot parkingSpot = getFirstAvailableParkingSpot(parkingSpotCategory);
-            String ticketBody = buildTicketBody();
+        Ticket parkingTicket = null;
+
+        ParkingSpot parkingSpot = getFirstAvailableParkingSpot(parkingSpotCategory);
+        if (parkingSpot != null) {
+            parkingTicket = new Ticket();
+            String ticketBody = buildTicketBody(parkingSpot);
             parkingTicket.setBody(ticketBody);
-            updateParkingField(parkingSpot,ParkingSpotStatus.OCCUPIED);
+            updateParkingField(parkingSpot, ParkingSpotStatus.OCCUPIED);
         } else {
-            parkingTicket.setBody(unavailableTicketMessage);
+            throw new UnavailableParkingSpotsException("No more parking spots of category " + parkingSpotCategory + " available");
         }
         return parkingTicket;
     }
-    public void updateParkingField(ParkingSpot parkingSpot, ParkingSpotStatus parkingSpotStatus){
+
+    public void updateParkingField(ParkingSpot parkingSpot, ParkingSpotStatus parkingSpotStatus) {
         this.parkingField.updateParkingSpotStatus(parkingSpot, parkingSpotStatus);
     }
-    public String buildTicketBody(){
-        String ticketBody = "Newly granted parking spot. ";
+
+    public String buildTicketBody(ParkingSpot parkingSpot) {
+        String ticketBody = "Newly granted parking spot. Parking spot id: " + parkingSpot.getId();
         return ticketBody;
     }
-    public ParkingSpot getFirstAvailableParkingSpot(ParkingSpotCategory parkingSpotCategory) {
 
-        List<ParkingSpot> parkingFieldList = this.parkingField.getParkingSpotList();
-        List<ParkingSpot> requestedCategoryParkingSpots = filterParkingSpotListByCategory(parkingFieldList, parkingSpotCategory);
-        List<ParkingSpot> requestedCategoryAvailableSpots = filterParkingSpotListByAvailability(requestedCategoryParkingSpots, ParkingSpotStatus.FREE);
-        return requestedCategoryAvailableSpots.get(0);
-    }
-    public boolean checkAvailableParkingSpots(ParkingSpotCategory parkingSpotCategory) {
-        boolean foundAvailableSpots = false;
-        List<ParkingSpot> parkingFieldList = this.parkingField.getParkingSpotList();
-        List<ParkingSpot> requestedCategoryParkingSpots = filterParkingSpotListByCategory(parkingFieldList, parkingSpotCategory);
-        List<ParkingSpot> requestedCategoryAvailableSpots = filterParkingSpotListByAvailability(requestedCategoryParkingSpots, ParkingSpotStatus.FREE);
-        if (requestedCategoryAvailableSpots.size() != 0) {
-            foundAvailableSpots = true;
+    private ParkingSpot getFirstAvailableParkingSpot(ParkingSpotCategory parkingSpotCategory) {
+
+        List<ParkingSpot> availableParkingSpotList = this.parkingField.getParkingSpotList().stream()
+                .filter(parkingSpot -> parkingSpot.getCategory() == parkingSpotCategory)
+                .filter(parkingSpot -> parkingSpot.getStatus() == ParkingSpotStatus.FREE)
+                .collect(Collectors.toList());
+        if (availableParkingSpotList.size() != 0) {
+            return availableParkingSpotList.get(0);
+        } else {
+            return null;
         }
-        return foundAvailableSpots;
 
-    }
-
-    public List<ParkingSpot> filterParkingSpotListByCategory(List<ParkingSpot> parkingFieldList,
-                                                             ParkingSpotCategory parkingSpotCategory) {
-        List<ParkingSpot> requestedCategoryParkingSpots = parkingFieldList.stream()
-                .filter(parkingSpot -> parkingSpot.getCategory() == parkingSpotCategory).collect(Collectors.toList());
-        return requestedCategoryParkingSpots;
-    }
-
-    public List<ParkingSpot> filterParkingSpotListByAvailability(List<ParkingSpot> parkingFieldList,
-                                                                 ParkingSpotStatus parkingSpotStatus) {
-        List<ParkingSpot> requestedCategoryAvailableSpots = parkingFieldList.stream()
-                .filter(parkingSpot -> parkingSpot.getStatus() == parkingSpotStatus).collect(Collectors.toList());
-        return requestedCategoryAvailableSpots;
-    }
-
-    public String getUnavailableTicketMessage() {
-        return unavailableTicketMessage;
     }
 
     public ParkingField getParkingField() {

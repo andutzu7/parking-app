@@ -17,9 +17,6 @@ public abstract class Vehicle {
         return parkingSpotCategory;
     }
 
-    public void setParkingSpotCategory(ParkingSpotCategory parkingSpotCategory) {
-        this.parkingSpotCategory = parkingSpotCategory;
-    }
 
     public User getUser() {
         return user;

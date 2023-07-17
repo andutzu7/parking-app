@@ -1,5 +1,6 @@
 package parking;
 
+import exceptions.UnavailableParkingSpotsException;
 import parking.utils.ParkingSpotCategory;
 import parking.utils.ParkingSpotStatus;
 import parking.utils.UserType;
@@ -26,21 +27,30 @@ public class ParkingSystem {
 
         ParkingSpotCategory parkingSpotCategory = vehicle.getParkingSpotCategory();
         if(userType == UserType.REGULAR) {
-            result = this.ticketDispenser.issueTicket(parkingSpotCategory);
-        }
+            try {
+                result = this.ticketDispenser.issueTicket(parkingSpotCategory);
+            }catch (UnavailableParkingSpotsException e){
+                System.out.println(e.getMessage());
+            }
+            }
         if(userType == UserType.VIP){
-                List<ParkingSpotCategory> vipParkingSpotCategories= computeVIPParkingSpotsArray(parkingSpotCategory);
+                List<ParkingSpotCategory> vipParkingSpotCategories= computeVIPParkingSpotsCategoriesArray(parkingSpotCategory);
                 for (ParkingSpotCategory category : vipParkingSpotCategories){
-                    result = this.ticketDispenser.issueTicket(category);
-                    if (!Objects.equals(result.getBody(), ticketDispenser.getUnavailableTicketMessage())){
-                        break;
+                    try {
+                        result = this.ticketDispenser.issueTicket(category);
+                        if (result != null){
+                            break;
+                        }
+                    }catch (UnavailableParkingSpotsException e){
+                        System.out.println(e.getMessage());
                     }
+
                 }
         }
         return result;
     }
 
-    public List<ParkingSpotCategory> computeVIPParkingSpotsArray(ParkingSpotCategory parkingSpotCategory){
+    public List<ParkingSpotCategory> computeVIPParkingSpotsCategoriesArray(ParkingSpotCategory parkingSpotCategory){
         ParkingSpotCategory[] parkingSpotCategories = ParkingSpotCategory.values();
         return Arrays.asList(parkingSpotCategories).subList(parkingSpotCategory.ordinal(),parkingSpotCategories.length);
     }
