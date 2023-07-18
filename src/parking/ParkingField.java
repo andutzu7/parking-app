@@ -3,6 +3,7 @@ package parking;
 import parking.utils.ParkingSpotStatus;
 
 import java.util.List;
+import java.util.Optional;
 
 public class ParkingField {
 
@@ -13,12 +14,12 @@ public class ParkingField {
     }
 
     public void updateParkingSpotStatus(ParkingSpot parkingSpot, ParkingSpotStatus newStatus) {
-        if (parkingSpotList.contains(parkingSpot)) {
-            int elementIndex = parkingSpotList.indexOf(parkingSpot);
 
-            ParkingSpot parkingSpotReference = parkingSpotList.get(elementIndex);
-            parkingSpotReference.setStatus(newStatus);
-        }
+        Optional<ParkingSpot> first = parkingSpotList.stream()
+                .filter(parkingSpot1 -> parkingSpot1.equals(parkingSpot))
+                .findFirst();
+        first.ifPresent(spot -> spot.setStatus(newStatus));
+
     }
 
     public List<ParkingSpot> getParkingSpotList() {

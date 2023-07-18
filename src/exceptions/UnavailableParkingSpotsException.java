@@ -1,7 +1,7 @@
 package exceptions;
 
 public class UnavailableParkingSpotsException
-        extends RuntimeException {
+        extends Exception {
     public UnavailableParkingSpotsException(String errorMessage) {
         super(errorMessage);
     }

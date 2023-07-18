@@ -17,23 +17,24 @@ public class TicketDispenser {
     }
 
 
-    public Ticket issueTicket(ParkingSpotCategory parkingSpotCategory) {
-        Ticket parkingTicket = null;
+    public Ticket issueTicket(ParkingSpotCategory parkingSpotCategory) throws UnavailableParkingSpotsException {
+        Ticket parkingTicket;
 
         ParkingSpot parkingSpot = getFirstAvailableParkingSpot(parkingSpotCategory);
         if (parkingSpot != null) {
-            parkingTicket = new Ticket();
-            String ticketBody = buildTicketBody(parkingSpot);
-            parkingTicket.setBody(ticketBody);
-            updateParkingField(parkingSpot, ParkingSpotStatus.OCCUPIED);
+            parkingTicket = initializeTicket(parkingSpot);
+            this.parkingField.updateParkingSpotStatus(parkingSpot, ParkingSpotStatus.OCCUPIED);
         } else {
             throw new UnavailableParkingSpotsException("No more parking spots of category " + parkingSpotCategory + " available");
         }
         return parkingTicket;
     }
 
-    public void updateParkingField(ParkingSpot parkingSpot, ParkingSpotStatus parkingSpotStatus) {
-        this.parkingField.updateParkingSpotStatus(parkingSpot, parkingSpotStatus);
+    public Ticket initializeTicket(ParkingSpot parkingSpot) {
+        Ticket ticket = new Ticket();
+        String ticketBody = buildTicketBody(parkingSpot);
+        ticket.setBody(ticketBody);
+        return ticket;
     }
 
     public String buildTicketBody(ParkingSpot parkingSpot) {
